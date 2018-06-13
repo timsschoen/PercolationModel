@@ -39,7 +39,7 @@ class Grid:
     def __str__(self):
 
         result = "Nodes:\n"
-        for i in range(len(self.nodes))
+        for i in range(len(self.nodes)):
             result += str(i) + ": " + str(self.nodes[i]) + "\n"
 
         result += "Edges:\n"

@@ -1,32 +1,70 @@
 import sys
 import numpy as np
-from OpenGL import GL
-from PyQt5.QtWidgets import QApplication, QWidget
+import math
+from lattice import Lattice
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from PyQt5.QtWidgets import QApplication, QOpenGLWidget
+
+class GridWidget(QOpenGLWidget):
+    
+    def __init__(self):
+        QOpenGLWidget.__init__(self)
+        self.vertex_array = []
+
+    def paintGL(self):
+        
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glLoadIdentity()
+
+        glEnableClientState(GL_VERTEX_ARRAY)
+                
+        glColor(1.0, 0.0, 0.0)
+
+        glVertexPointerf(self.vertex_array)
+        glDrawArrays(GL_LINE_STRIP, 0, len(self.vertex_array))
+        glFlush()
+
+    def setGrid(self, grid):
+        self.vertex_array = []
+
+        for e in grid.edges:
+            if(e.enabled):
+                self.vertex_array.append(grid.nodes[e.a].array())
+                self.vertex_array.append(grid.nodes[e.b].array())
+
+    def resizeGL(self, w, h):
+        '''
+        Resize the GL window 
+        '''
+        
+        glViewport(0, 0, w, h)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(60.0, 1.0, 2, 60.0)
+    
+    def initializeGL(self):
+        '''
+        Initialize GL
+        '''
+        
+        # set viewing projection
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClearDepth(1.0)
+
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluPerspective(60.0, 1.0, 2, 60.0)
+
 
 if __name__ == '__main__':
     
     app = QApplication(sys.argv)
 
-    w = QWidget()
-    w.resize(250, 150)
-    w.move(300, 300)
+    w = GridWidget()
+    w.setGrid(Lattice(3,3))
     w.setWindowTitle('Percolation Model')
     w.show()
     
     sys.exit(app.exec_())
 
-
-class OpenGLWidget(QOpenGLWidget):
-
-    def initializeGL(self):
-        vertices = np.array([0.0, 1.0, -1.0, -1.0, 1.0, -1.0], dtype=np.float32)
-
-        bufferId = GL.glGenBuffers(1)
-        GL.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferId)
-        GL.glBufferData(GL.GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL.GL_STATIC_DRAW)
-
-        GL.glEnableVertexAttribArray(0)
-        GL.glVertexAttribPointer(0, 2, GL.GL_FLOAT, GL.GL_FALSE, 0, None)
-
-    def paintGL(self):
-        GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
