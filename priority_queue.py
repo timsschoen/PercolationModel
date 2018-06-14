@@ -6,12 +6,12 @@ class PriorityQueue:
 	def __init__(self):
 		self.heap = []                         # list of entries arranged in a heap
 		self.entry_finder = {}               # mapping of tasks to entries
-
+		self.count = 0
 	def add_update(self, task, priority):
 	    if task in self.entry_finder:
 	        self.remove(task)
-
-	    entry = [priority, task]
+	    self.count += 1
+	    entry = [priority, self.count, task]
 	    self.entry_finder[task] = entry
 	    heappush(self.heap, entry)
 
@@ -21,7 +21,7 @@ class PriorityQueue:
 
 	def pop(self):
 	    while self.heap:
-	        priority, task = heappop(self.heap)
+	        priority, count, task = heappop(self.heap)
 	        if task is not None:
 	            del self.entry_finder[task]
 	            return task
