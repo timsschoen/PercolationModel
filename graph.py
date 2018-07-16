@@ -87,7 +87,7 @@ class Graph:
 
         return A
 
-    def setFractionOfEdges(self, fraction):
+    def setFractionOfEdges(self, fraction, refresh):
         size = len(self.edges)
         target = fraction*size
         change = target-self.activeEdgeCount
@@ -124,25 +124,48 @@ class Graph:
         result += "Total edge count: " + str(len(self.edges)) + "\n"
         result += "Active edge count: " + str(self.activeEdgeCount)
 
-        return result;
+        return result
 
 
-class Lattice(Graph):
+class Lattice_2d(Graph):
 
-    def __init__(self,width, height):
-        super(Lattice, self).__init__()
-        xsteps = 1/(width-1)
-        ysteps = 1/(height-1)
+    def __init__(self,size):
+        super(Lattice_2d, self).__init__()
+        xsteps = 1/(size-1)
+        ysteps = 1/(size-1)
 
         self.dim = 2
 
-        for x in range(width):
-            for y in range(height):
+        for x in range(size):
+            for y in range(size):
                 self.nodes.append(np.array([x*xsteps, y*ysteps]))
 
-                if(y != height-1):                    
-                    self.edges.append(Edge(x*height+y, x*height+(y+1)))
+                if(y != size-1):                    
+                    self.edges.append(Edge(x*size+y, x*size+(y+1)))
                     self.activeEdgeCount = self.activeEdgeCount + 1
-                if(x != width-1):
-                    self.edges.append(Edge(x*height+y, (x+1)*height+y))
+                if(x != size-1):
+                    self.edges.append(Edge(x*size+y, (x+1)*size+y))
+                    self.activeEdgeCount = self.activeEdgeCount + 1
+
+class Triangles_2d(Graph):
+
+    def __init__(self,size):
+        super(Triangles_2d, self).__init__()
+        xsteps = 1/(size-1)
+        ysteps = 1/(size-1)
+
+        self.dim = 2
+
+        for x in range(size):
+            for y in range(size):
+                self.nodes.append(np.array([x*xsteps, y*ysteps]))
+
+                if(y != size-1):                    
+                    self.edges.append(Edge(x*size+y, x*size+(y+1)))
+                    self.activeEdgeCount = self.activeEdgeCount + 1
+                if(x != size-1):
+                    self.edges.append(Edge(x*size+y, (x+1)*size+y))
+                    self.activeEdgeCount = self.activeEdgeCount + 1
+                if(x != size-1 and y != size-1):                    
+                    self.edges.append(Edge(x*size+y, (x+1)*size+(y+1)))
                     self.activeEdgeCount = self.activeEdgeCount + 1

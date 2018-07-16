@@ -19,7 +19,7 @@ class GraphWidget(QOpenGLWidget):
 
         glEnableClientState(GL_VERTEX_ARRAY)
                 
-        glColor(1.0, 0.0, 0.0)
+        glColor(0.0, 0.0, 0.0)
 
         glVertexPointerf(self.vertex_array)
         glDrawArrays(GL_LINES, 0, len(self.vertex_array))
@@ -33,6 +33,9 @@ class GraphWidget(QOpenGLWidget):
 
     def setGraph(self, graph):
         self.vertex_array = []
+
+        if(graph == None):
+            return
 
         for e in graph.edges:
             if(e.enabled):
@@ -56,7 +59,7 @@ class GraphWidget(QOpenGLWidget):
         glLoadIdentity()
     
     def initializeGL(self):
-        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClearColor(0.9, 0.9, 0.9, 1.0)
         glClearDepth(1.0)
 
         glMatrixMode(GL_PROJECTION)
