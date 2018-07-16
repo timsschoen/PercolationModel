@@ -1,6 +1,7 @@
 import numpy as np
 import random
 from priority_queue import PriorityQueue
+from queue import Queue
 
 class Edge:
     def __init__(self, a, b):
@@ -13,8 +14,48 @@ class Graph:
     def __init__(self):
         self.nodes = []
         self.edges = []
-        self.activeEdgeCount = 0
+        self.active_edge_count = 0
         self.dim = 2
+
+    def findClusters(self):
+        clusters = np.zeros(len(self.nodes))
+
+        G = self.asAdjacencyList()
+
+        cluster_count = 0
+        largest_cluster = 0
+        largest_cluster_size = 0
+
+        for i in range(len(self.nodes)):
+
+            if(clusters[i] != 0):
+                continue
+
+            cluster_count += 1
+
+            queue = Queue()
+
+            queue.put(i)
+
+            cluster_size = 0
+
+            while (not queue.empty()):
+                index = queue.get()
+
+                for neighbour in G[index]:
+
+                    if(clusters[neighbour] != 0):
+                        continue
+
+                    clusters[neighbour] = cluster_count
+                    queue.put(neighbour)
+                    cluster_size += 1
+
+            if(cluster_size > largest_cluster_size):
+                largest_cluster_size = cluster_size
+                largest_cluster = cluster_count
+        
+        return (clusters, largest_cluster, largest_cluster_size)   
 
     def findPath(self, startID, endID):
         Queue = PriorityQueue()
@@ -87,28 +128,35 @@ class Graph:
 
         return A
 
-    def setFractionOfEdges(self, fraction, refresh):
-        size = len(self.edges)
-        target = fraction*size
-        change = target-self.activeEdgeCount
+    def setFractionOfEdges(self, fraction, refresh):        
 
-        while (change > 0):
-            while(True):
-                index = np.random.randint(0, size)
-                if( self.edges[index].enabled == False):
-                    self.edges[index].enabled = True
-                    self.activeEdgeCount += 1
-                    change -= 1
-                    break
+        if(refresh):
+            draw = np.random.binomial(1, fraction, len(self.edges))
+            self.active_edge_count = draw.sum()
+            for i in range(len(self.edges)):
+                self.edges[i].enabled = (draw[i] == 1)
+        else:
+            size = len(self.edges)
+            target = fraction*size
+            change = target-self.active_edge_count
 
-        while (change < 0):
-            while(True):
-                index = np.random.randint(0, size)
-                if( self.edges[index].enabled):
-                    self.edges[index].enabled = False
-                    self.activeEdgeCount -= 1
-                    change += 1
-                    break
+            while (change > 0):
+                while(True):
+                    index = np.random.randint(0, size)
+                    if( self.edges[index].enabled == False):
+                        self.edges[index].enabled = True
+                        self.active_edge_count += 1
+                        change -= 1
+                        break
+
+            while (change < 0):
+                while(True):
+                    index = np.random.randint(0, size)
+                    if( self.edges[index].enabled):
+                        self.edges[index].enabled = False
+                        self.active_edge_count -= 1
+                        change += 1
+                        break
 
     def __str__(self):
 
@@ -122,7 +170,7 @@ class Graph:
 
         result += "Total vertex count: " + str(len(self.nodes)) + "\n"
         result += "Total edge count: " + str(len(self.edges)) + "\n"
-        result += "Active edge count: " + str(self.activeEdgeCount)
+        result += "Active edge count: " + str(self.active_edge_count)
 
         return result
 
@@ -142,10 +190,10 @@ class Lattice_2d(Graph):
 
                 if(y != size-1):                    
                     self.edges.append(Edge(x*size+y, x*size+(y+1)))
-                    self.activeEdgeCount = self.activeEdgeCount + 1
                 if(x != size-1):
                     self.edges.append(Edge(x*size+y, (x+1)*size+y))
-                    self.activeEdgeCount = self.activeEdgeCount + 1
+
+        self.active_edge_count = len(self.edges)
 
 class Triangles_2d(Graph):
 
@@ -162,10 +210,9 @@ class Triangles_2d(Graph):
 
                 if(y != size-1):                    
                     self.edges.append(Edge(x*size+y, x*size+(y+1)))
-                    self.activeEdgeCount = self.activeEdgeCount + 1
                 if(x != size-1):
                     self.edges.append(Edge(x*size+y, (x+1)*size+y))
-                    self.activeEdgeCount = self.activeEdgeCount + 1
                 if(x != size-1 and y != size-1):                    
                     self.edges.append(Edge(x*size+y, (x+1)*size+(y+1)))
-                    self.activeEdgeCount = self.activeEdgeCount + 1
+
+        self.active_edge_count = len(self.edges)

@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     w = AppWidget()
    
-    w.resize(750,750)
+    w.resize(1500,750)
     w.show()
 
     sys.exit(app.exec_())

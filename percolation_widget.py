@@ -25,12 +25,16 @@ class PercolationWidget(QWidget):
         self.info_p = QLabel(self)
         self.info_p.setMinimumHeight(30)
         self.info_p.setMaximumHeight(30)
+        self.info_clustersize = QLabel(self)
+        self.info_clustersize.setMinimumHeight(30)
+        self.info_clustersize.setMaximumHeight(30)
 
 
         self.infobar.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
         self.infobar.addWidget(self.info_p)
         self.infobar.addWidget(self.info_nodes)
         self.infobar.addWidget(self.info_edges)
+        self.infobar.addWidget(self.info_clustersize)
         self.infobar.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
 
         self.layout.addLayout(self.infobar)
@@ -50,13 +54,17 @@ class PercolationWidget(QWidget):
             return
         self.graph.setFractionOfEdges(self.p, self.refresh)
 
-        #path = self.graph.findPath(0, 399)              
-        #self.graphwidget.setPath(self.graph, path)
+        #path = self.graph.findPath(0, 399)
+        clusters, largest_cluster, largest_cluster_size = self.graph.findClusters()
 
-        self.graphwidget.setGraph(self.graph)
+        region = (clusters == largest_cluster)
+
+        self.graphwidget.setGraph(self.graph, [region])
 
         self.info_nodes.setText("\tNodes: " + str(len(self.graph.nodes)))
-        self.info_edges.setText("\tEdges: " + str(len(self.graph.edges)) + ", " + str(self.graph.activeEdgeCount) + " active")
+        self.info_edges.setText("\tEdges: " + str(len(self.graph.edges)) + ", " + str(self.graph.active_edge_count) + " active")
+        self.info_clustersize.setText("\tLargest cluster: " + str(largest_cluster_size/len(self.graph.nodes)) + " %")
+
 
     def setPValue(self, value):
         self.p = value/100
