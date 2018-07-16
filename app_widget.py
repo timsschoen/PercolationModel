@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from graph_widget import GraphWidget
 from graph import Lattice_2d, Triangles_2d
 from percolation_widget import PercolationWidget
-from pyqtgraph import PlotWidget
+from pyqtgraph import PlotWidget, ScatterPlotItem
 
 class AppWidget(QWidget):
 
@@ -67,11 +67,22 @@ class AppWidget(QWidget):
         self.refresh_edges_checkbox = QCheckBox("Refresh Edges instead of Adding/Removing", self)
         self.refresh_edges_checkbox.stateChanged.connect(self.handleRefreshCheckboxChange)
 
-        self.plot_widget = PlotWidget()
-
         self.settingslayout.addWidget(self.refresh_edges_checkbox)
 
         self.settingslayout.addSpacerItem(QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding))
+
+        self.plot_widget = PlotWidget(name="clustersize by p")
+        self.settingslayout.addWidget(self.plot_widget)
+        self.plot_widget.setLabel('left', 'maximum cluster size', units='%')
+        self.plot_widget.setLabel('bottom', 'p', units='')
+        self.plot_widget.setXRange(0, 1)
+        self.plot_widget.setYRange(0, 1)
+        self.plot = ScatterPlotItem()
+        self.plot_widget.addItem(self.plot)
+
+        self.plot_clear_button = QPushButton("Clear plot")
+        self.plot_clear_button.clicked.connect(self.handlePlotClearButton)
+        self.settingslayout.addWidget(self.plot_clear_button)
 
         self.settingswidget.setLayout(self.settingslayout)
         self.settingswidget.setMinimumSize(50, 50)
@@ -80,6 +91,9 @@ class AppWidget(QWidget):
         self.splitter.addWidget(self.percolationWidget)
 
         self.layout.addWidget(self.splitter)
+
+
+        self.percolationWidget.graphUpdated.connect(self.handleGraphUpdated)
 
         self.setWindowTitle('Percolation Model')
 
@@ -98,5 +112,14 @@ class AppWidget(QWidget):
 
     def handleRefreshCheckboxChange(self, value):
         self.percolationWidget.setRefresh(value == Qt.Checked)
+
+    def handleGraphUpdated(self, p, clustersize):
+        self.plot.addPoints(x=[p],y=[clustersize])
+
+    def handlePlotClearButton(self):
+        self.plot = ScatterPlotItem()
+        self.plot_widget.clear()
+        self.plot_widget.addItem(self.plot)
+        self.plot_widget.update()
 
 
