@@ -1,5 +1,4 @@
 numpy
 PyOpenGL
 pyQt5
-heapq
-unittest
+pyqtgraph
