@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from graph_widget import GraphWidget
-from graph import Lattice_2d, Triangles_2d
+from graph import Lattice_2d, Triangles_2d, Honeycomb_2d, Lattice_3d
 from percolation_widget import PercolationWidget
 from pyqtgraph import PlotWidget, ScatterPlotItem
 
@@ -10,8 +10,8 @@ class AppWidget(QWidget):
     def __init__(self):
         QWidget.__init__(self)
 
-        self.graph_types = [Lattice_2d,Triangles_2d]
-        self.graph_names = ["2d-Lattice", "2d-Triangles"]
+        self.graph_types = [Lattice_2d,Triangles_2d, Honeycomb_2d, Lattice_3d]
+        self.graph_names = ["2D-Grid", "2D-Triangles", "2D-Honeycomb", "3D-Grid"]
 
         self.setupLayout()
         self.setSettings()

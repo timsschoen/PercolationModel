@@ -195,6 +195,29 @@ class Lattice_2d(Graph):
 
         self.active_edge_count = len(self.edges)
 
+
+class Lattice_3d(Graph):
+
+    def __init__(self,size):
+        super(Lattice_3d, self).__init__()
+        stepsize = 1/(size-1)
+
+        self.dim = 3
+
+        for x in range(size):
+            for y in range(size):
+                for z in range(size):
+                    self.nodes.append(np.array([x*stepsize, y*stepsize, z*stepsize]))
+
+                    if(y != size-1):                    
+                        self.edges.append(Edge(x*size*size+y*size+z, x*size*size + (y+1)*size + z))
+                    if(x != size-1):
+                        self.edges.append(Edge(x*size*size+y*size+z, (x+1)*size*size + y*size + z))
+                    if(z != size-1):
+                        self.edges.append(Edge(x*size*size+y*size+z, x*size*size + y*size + (z+1)))
+
+        self.active_edge_count = len(self.edges)
+
 class Triangles_2d(Graph):
 
     def __init__(self,size):
@@ -214,5 +237,62 @@ class Triangles_2d(Graph):
                     self.edges.append(Edge(x*size+y, (x+1)*size+y))
                 if(x != size-1 and y != size-1):                    
                     self.edges.append(Edge(x*size+y, (x+1)*size+(y+1)))
+
+        self.active_edge_count = len(self.edges)
+
+class Honeycomb_2d(Graph):
+
+    def __init__(self,size):
+        super(Honeycomb_2d, self).__init__()
+
+        size -= size % 3
+
+        stepsize = 1/(size-1)
+
+        self.dim = 2
+
+        rowlength = 2*int(size / 3)
+
+        print("size: " + str(size) + ", rowlength: " + str(rowlength))
+
+        for y in range(size):
+
+            nodes_in_row = 0
+
+            for x in range(size):
+
+                if y % 2 == 0 and x % 3 == 2:
+                    continue
+
+                if y % 2 == 1 and x % 3 == 1:
+                    continue
+
+                self.nodes.append(np.array([x*stepsize - (y % 2)*(stepsize/2), y*stepsize]))
+
+                index = y*rowlength + nodes_in_row
+
+                print("id: " + str(index) + ", x: " + str(x) + ", y: " + str(y) + " " + str(x*stepsize - (y % 2)*(stepsize/2)) + "," + str(y*stepsize))
+
+                if(y % 2 == 0 and x % 3 == 0):       
+                    if( y != size-1):           
+                        self.edges.append(Edge(index, index + rowlength))
+                    if (x != size-1):                        
+                        self.edges.append(Edge(index, index+1))
+
+                if(y % 2 == 0 and x % 3 == 1):       
+                    if y != size-1:           
+                        self.edges.append(Edge(index, index + rowlength))
+
+                if(y % 2 == 1 and x % 3 == 0):       
+                    if( y != size-1):           
+                        self.edges.append(Edge(index, index + rowlength))
+
+                if(y % 2 == 1 and x % 3 == 2):       
+                    if( y != size-1):           
+                        self.edges.append(Edge(index, index + rowlength))
+                    if (x != size-1):                        
+                        self.edges.append(Edge(index, index+1))
+
+                nodes_in_row += 1
 
         self.active_edge_count = len(self.edges)

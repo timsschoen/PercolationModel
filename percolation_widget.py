@@ -66,7 +66,7 @@ class PercolationWidget(QWidget):
 
         self.info_nodes.setText("\tNodes: " + str(len(self.graph.nodes)))
         self.info_edges.setText("\tEdges: " + str(len(self.graph.edges)) + ", " + str(self.graph.active_edge_count) + " active")
-        self.info_clustersize.setText("\tLargest cluster: " + str(largest_cluster_size/len(self.graph.nodes)) + " %")
+        self.info_clustersize.setText("\tLargest cluster: " + "{:.2f}".format(100*largest_cluster_size/len(self.graph.nodes)) + " %")
         self.graphUpdated.emit(self.p, largest_cluster_size/len(self.graph.nodes))
 
     def setPValue(self, value):
