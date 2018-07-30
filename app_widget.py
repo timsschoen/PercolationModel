@@ -35,6 +35,7 @@ class AppWidget(QWidget):
         self.graph_type_combobox = QComboBox(self)
         self.graph_type_combobox.addItems(self.graph_names)
         self.graph_type_combobox.currentIndexChanged.connect(self.handleGraphTypeChanged)
+        self.graph_type_combobox.setFocusPolicy(Qt.NoFocus)
         self.settingslayout.addWidget(self.graph_type_combobox)
 
         self.p_slider_layout = QHBoxLayout()
@@ -97,9 +98,14 @@ class AppWidget(QWidget):
 
         self.setWindowTitle('Percolation Model')
 
+        self.setFocus()
+
     def handleGraphTypeChanged(self,index):
+        if(self.graph_types[index].dim == 3):
+            self.N_slider.setValue(10)
         self.graph = self.graph_types[index](self.N_slider.value())
         self.percolationWidget.setGraph(self.graph)
+        self.setFocus()
 
     def handlePSliderChange(self, value):
         self.percolationWidget.setPValue(value)
@@ -121,5 +127,13 @@ class AppWidget(QWidget):
         self.plot_widget.clear()
         self.plot_widget.addItem(self.plot)
         self.plot_widget.update()
+
+    def keyPressEvent(self, event):
+        if event.key() in [Qt.Key_W, Qt.Key_A, Qt.Key_S, Qt.Key_D, Qt.Key_Q, Qt.Key_E, Qt.Key_Plus, Qt.Key_Minus]:
+            self.percolationWidget.graphwidget.keyPressEvent(event)
+        elif event.key() == Qt.Key_Tab:
+            self.setFocus()
+        else:
+            QWidget.keyPressEvent(self, event)
 
 

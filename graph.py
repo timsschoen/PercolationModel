@@ -15,7 +15,6 @@ class Graph:
         self.nodes = []
         self.edges = []
         self.active_edge_count = 0
-        self.dim = 2
 
     def findClusters(self):
         clusters = np.zeros(len(self.nodes))
@@ -177,12 +176,12 @@ class Graph:
 
 class Lattice_2d(Graph):
 
+    dim = 2
+
     def __init__(self,size):
         super(Lattice_2d, self).__init__()
         xsteps = 1/(size-1)
         ysteps = 1/(size-1)
-
-        self.dim = 2
 
         for x in range(size):
             for y in range(size):
@@ -198,11 +197,12 @@ class Lattice_2d(Graph):
 
 class Lattice_3d(Graph):
 
+    dim = 3
+
     def __init__(self,size):
         super(Lattice_3d, self).__init__()
         stepsize = 1/(size-1)
 
-        self.dim = 3
 
         for x in range(size):
             for y in range(size):
@@ -220,12 +220,12 @@ class Lattice_3d(Graph):
 
 class Triangles_2d(Graph):
 
+    dim = 2
+
     def __init__(self,size):
         super(Triangles_2d, self).__init__()
         xsteps = 1/(size-1)
         ysteps = 1/(size-1)
-
-        self.dim = 2
 
         for x in range(size):
             for y in range(size):
@@ -242,6 +242,8 @@ class Triangles_2d(Graph):
 
 class Honeycomb_2d(Graph):
 
+    dim = 2
+
     def __init__(self,size):
         super(Honeycomb_2d, self).__init__()
 
@@ -249,11 +251,7 @@ class Honeycomb_2d(Graph):
 
         stepsize = 1/(size-1)
 
-        self.dim = 2
-
         rowlength = 2*int(size / 3)
-
-        print("size: " + str(size) + ", rowlength: " + str(rowlength))
 
         for y in range(size):
 
@@ -270,8 +268,6 @@ class Honeycomb_2d(Graph):
                 self.nodes.append(np.array([x*stepsize - (y % 2)*(stepsize/2), y*stepsize]))
 
                 index = y*rowlength + nodes_in_row
-
-                print("id: " + str(index) + ", x: " + str(x) + ", y: " + str(y) + " " + str(x*stepsize - (y % 2)*(stepsize/2)) + "," + str(y*stepsize))
 
                 if(y % 2 == 0 and x % 3 == 0):       
                     if( y != size-1):           

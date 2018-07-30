@@ -32,7 +32,6 @@ class PercolationWidget(QWidget):
         self.info_clustersize.setMinimumHeight(30)
         self.info_clustersize.setMaximumHeight(30)
 
-
         self.infobar.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
         self.infobar.addWidget(self.info_p)
         self.infobar.addWidget(self.info_nodes)
@@ -41,6 +40,18 @@ class PercolationWidget(QWidget):
         self.infobar.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
 
         self.layout.addLayout(self.infobar)
+
+        info = QLabel(self)
+        info.setMinimumHeight(30)
+        info.setMaximumHeight(30)
+        info.setText("Press +/- to zoom, WASD for panning or Q/E for rotating.")
+
+        infolayout = QHBoxLayout()
+        infolayout.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
+        infolayout.addWidget(info)
+        infolayout.addSpacerItem(QSpacerItem(10, 10, QSizePolicy.Expanding,QSizePolicy.Minimum))
+
+        self.layout.addLayout(infolayout)
 
         self.setMinimumSize(300, 300)
 
@@ -73,3 +84,5 @@ class PercolationWidget(QWidget):
         self.p = value/100
         self.info_p.setText("p = " + str(self.p))
         self.updateGraph()
+
+
