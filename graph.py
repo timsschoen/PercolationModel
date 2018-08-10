@@ -156,6 +156,12 @@ class Graph:
                         self.active_edge_count -= 1
                         change += 1
                         break
+    
+    def getTopBoundary(self):
+        pass
+
+    def getBottomBoundary(self):
+        pass
 
     def __str__(self):
 
@@ -194,6 +200,19 @@ class Lattice_2d(Graph):
 
         self.active_edge_count = len(self.edges)
 
+    def getBottomBoundary(self):
+        size = len(self.nodes)
+        result = np.zeros(size)
+        for x in range(size):
+            result[x*size + size-1] = 1
+        return result
+
+    def getTopBoundary(self):
+        size = len(self.nodes)
+        result = np.zeros(size)
+        for x in range(size):
+            result[x*size] = 1
+        return result
 
 class Lattice_3d(Graph):
 

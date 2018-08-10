@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QSlider, QHBoxLayout, QLabel, QSpacerItem, QSizePolicy
 from PyQt5.QtCore import Qt, QRect, pyqtSignal
 from graph_widget import GraphWidget
+import numpy as np
 
 class PercolationWidget(QWidget):
 
@@ -56,7 +57,7 @@ class PercolationWidget(QWidget):
         self.setMinimumSize(300, 300)
 
     def setGraph(self,graph):
-        self.graph = graph;
+        self.graph = graph
         self.updateGraph()
 
     def setRefresh(self, refresh):
@@ -73,7 +74,13 @@ class PercolationWidget(QWidget):
 
         region = (clusters == largest_cluster)
 
-        self.graphwidget.setGraph(self.graph, [region])
+        bottomrow = region[self.graph.getBottomRow()]
+        toprow = region[self.graph.getTopRow()]
+        in_both, bottomindex, topindex = np.intersect1d(toprow,bottomrow, return_indices=True)
+
+        path = self.graph.findPath(bottomindex[0], topindex[0])
+
+        self.graphwidget.setGraph(self.graph, [region], [path])
 
         self.info_nodes.setText("\tNodes: " + str(len(self.graph.nodes)))
         self.info_edges.setText("\tEdges: " + str(len(self.graph.edges)) + ", " + str(self.graph.active_edge_count) + " active")

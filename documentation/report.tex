@@ -16,9 +16,9 @@
 \usepackage{gensymb}
 \usepackage{amsfonts}
 \usepackage{natbib}
-\usepackage{float}
+\usepackage{float} 
 
-\bibliographystyle{natdin}
+\bibliographystyle{abbrv}
 \usetikzlibrary{positioning,shadows}
 
 \begin{document}
@@ -30,11 +30,24 @@
 \ \\
 
 \section*{Percolation model}
-For this model, only \emph{bond percolation}, as defined in \cite{Percolation}, was implemented and evaluated. The model is given as follows:
-\section*{Grid types}
-\subsection*{2D-grids}
-\subsection*{3D-grids}
+For this model, only \emph{bond percolation}, as defined in \cite{Percolation}, was implemented and evaluated. The model is given as follows:\\
+Given a graph $G = (V,E)$ and a probability $p$, only consider an edge $e \in E$ \emph{active} with probability $p$ and inactive otherwise. 
+What is the size of the largest connected component of the graph $S(p)$ only using active edges? 
+How is this size dependent on the propability $p$ and the type of graph $G$?
+
 \section*{Implementation using \emph{Python} with \emph{PyQt}}
+To test and visualize this problem a small demo application was built. Different grids and gridsize can be chosen with a graphical 
+user interface. The graph will then be visualized, after drawing active edges using the value $p$, which can be varied by the user.\\
+Additionally, the application will find the connected components of the graph and calculate the fraction $\frac{S(p)}{|V|}$ for the largest connected component found. Breadth-first-search (BFS) is used to find the connected components for the subgraph of active edges.
+To further visualize the percolation effect, a shortest path from the top to the bottom of the graph is found and visualized, if it exists. For this, the A* algorithm is used.
+The value of $p$ and the corresponding $S(p)$ found by this analysis is added to a scatterplot of observations, which will be grown slowly as the user changes values of the sliders. 
+The scatterplot can be cleared by the user.\\
+\subsection*{Grid types}
+The different grid types were programmed as different classes, each inheriting a common class (\verb|Graph|), which supports different essential algorithms for finding the connected 
+components and shortest paths. Initially, the graphs are generated as a list of nodes as an numpy array with spatial coordinates and a list of edges, each storing the indices of the connected nodes.
+To execute the A* and breadth-first-search algorithms the graph is transformed in adjacency-list-format.
+\subsubsection*{2D-grids}
+\subsubsection*{3D-grids}
 \bibliography{literature}
 
 \end{document}
