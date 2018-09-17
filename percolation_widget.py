@@ -69,18 +69,38 @@ class PercolationWidget(QWidget):
             return
         self.graph.setFractionOfEdges(self.p, self.refresh)
 
-        #path = self.graph.findPath(0, 399)
         clusters, largest_cluster, largest_cluster_size = self.graph.findClusters()
+
+        print(clusters)
 
         region = (clusters == largest_cluster)
 
-        bottomrow = region[self.graph.getBottomRow()]
-        toprow = region[self.graph.getTopRow()]
-        in_both, bottomindex, topindex = np.intersect1d(toprow,bottomrow, return_indices=True)
+        bottomboundary = self.graph.getBottomBoundary()
+        topboundary = self.graph.getTopBoundary()
 
-        path = self.graph.findPath(bottomindex[0], topindex[0])
+        print("bottom boundary mask: " + str(bottomboundary))
+        print("top boundary mask: " + str(topboundary))
 
-        self.graphwidget.setGraph(self.graph, [region], [path])
+        bottomrow = clusters[bottomboundary]
+        toprow = clusters[topboundary]
+
+        print("clusters at the bottomrow: " + str(bottomrow))
+        print("clusters at the toprow:" + str(toprow))
+
+        same, b, c = np.intersect1d(toprow,bottomrow, return_indices=True)
+
+        print(same)
+        print(b)
+        print(c)
+
+        if(len(b) > 0):
+            bottomindex_graph = np.nonzero(bottomboundary)[0][c][0]
+            topindex_graph = np.nonzero(topboundary)[0][b][0]
+            print("path from " + str(bottomindex_graph) + " to " + str(topindex_graph))
+            path = self.graph.findPath(bottomindex_graph, topindex_graph)
+            self.graphwidget.setGraph(self.graph, [region], [path])
+        else:
+            self.graphwidget.setGraph(self.graph, [region], [])
 
         self.info_nodes.setText("\tNodes: " + str(len(self.graph.nodes)))
         self.info_edges.setText("\tEdges: " + str(len(self.graph.edges)) + ", " + str(self.graph.active_edge_count) + " active")

@@ -37,7 +37,7 @@ How is this size dependent on the propability $p$ and the type of graph $G$?
 
 \section*{Implementation using \emph{Python} with \emph{PyQt}}
 To test and visualize this problem a small demo application was built. Different grids and gridsize can be chosen with a graphical 
-user interface. The graph will then be visualized, after drawing active edges using the value $p$, which can be varied by the user.\\
+user interface. The graph will then be visualized using OpenGL, after randomly drawing active edges using the value $p$, which can be varied by the user.\\
 Additionally, the application will find the connected components of the graph and calculate the fraction $\frac{S(p)}{|V|}$ for the largest connected component found. Breadth-first-search (BFS) is used to find the connected components for the subgraph of active edges.
 To further visualize the percolation effect, a shortest path from the top to the bottom of the graph is found and visualized, if it exists. For this, the A* algorithm is used.
 The value of $p$ and the corresponding $S(p)$ found by this analysis is added to a scatterplot of observations, which will be grown slowly as the user changes values of the sliders. 
@@ -47,6 +47,7 @@ The different grid types were programmed as different classes, each inheriting a
 components and shortest paths. Initially, the graphs are generated as a list of nodes as an numpy array with spatial coordinates and a list of edges, each storing the indices of the connected nodes.
 To execute the A* and breadth-first-search algorithms the graph is transformed in adjacency-list-format.
 \subsubsection*{2D-grids}
+
 \subsubsection*{3D-grids}
 \bibliography{literature}
 

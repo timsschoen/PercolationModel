@@ -32,6 +32,8 @@ class Graph:
 
             cluster_count += 1
 
+            clusters[i] = cluster_count
+
             queue = Queue()
 
             queue.put(i)
@@ -188,6 +190,7 @@ class Lattice_2d(Graph):
         super(Lattice_2d, self).__init__()
         xsteps = 1/(size-1)
         ysteps = 1/(size-1)
+        self.size = size
 
         for x in range(size):
             for y in range(size):
@@ -201,17 +204,15 @@ class Lattice_2d(Graph):
         self.active_edge_count = len(self.edges)
 
     def getBottomBoundary(self):
-        size = len(self.nodes)
-        result = np.zeros(size)
-        for x in range(size):
-            result[x*size + size-1] = 1
+        result = np.zeros(self.size*self.size).astype(bool)
+        for x in range(self.size):
+            result[x*self.size + self.size-1] = True
         return result
 
     def getTopBoundary(self):
-        size = len(self.nodes)
-        result = np.zeros(size)
-        for x in range(size):
-            result[x*size] = 1
+        result = np.zeros(self.size*self.size).astype(bool)
+        for x in range(self.size):
+            result[x*self.size] = True
         return result
 
 class Lattice_3d(Graph):
@@ -245,6 +246,7 @@ class Triangles_2d(Graph):
         super(Triangles_2d, self).__init__()
         xsteps = 1/(size-1)
         ysteps = 1/(size-1)
+        self.size = size
 
         for x in range(size):
             for y in range(size):
@@ -259,6 +261,18 @@ class Triangles_2d(Graph):
 
         self.active_edge_count = len(self.edges)
 
+    def getBottomBoundary(self):
+        result = np.zeros(self.size*self.size).astype(bool)
+        for x in range(self.size):
+            result[x*self.size + self.size-1] = True
+        return result
+
+    def getTopBoundary(self):
+        result = np.zeros(self.size*self.size).astype(bool)
+        for x in range(self.size):
+            result[x*self.size] = True
+        return result
+
 class Honeycomb_2d(Graph):
 
     dim = 2
@@ -267,6 +281,7 @@ class Honeycomb_2d(Graph):
         super(Honeycomb_2d, self).__init__()
 
         size -= size % 3
+        self.size = size
 
         stepsize = 1/(size-1)
 
@@ -311,3 +326,47 @@ class Honeycomb_2d(Graph):
                 nodes_in_row += 1
 
         self.active_edge_count = len(self.edges)
+
+    def getBottomBoundary(self):
+        result = np.zeros(len(self.nodes)).astype(bool)
+        rowlength = 2*int(self.size / 3)
+
+        for y in range(self.size):
+
+            nodes_in_row = 0
+
+            for x in range(self.size):
+
+                if y % 2 == 0 and x % 3 == 2:
+                    continue
+
+                if y % 2 == 1 and x % 3 == 1:
+                    continue
+
+                index = y*rowlength + nodes_in_row
+
+                if(y == 0):
+                    result[index] = 1
+        return result
+
+    def getTopBoundary(self):
+        result = np.zeros(len(self.nodes)).astype(bool)
+        rowlength = 2*int(self.size / 3)
+
+        for y in range(self.size):
+
+            nodes_in_row = 0
+
+            for x in range(self.size):
+
+                if y % 2 == 0 and x % 3 == 2:
+                    continue
+
+                if y % 2 == 1 and x % 3 == 1:
+                    continue
+
+                index = y*rowlength + nodes_in_row
+
+                if(y == self.size-1):
+                    result[index] = 1
+        return result

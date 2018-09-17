@@ -19,7 +19,7 @@ class AppWidget(QWidget):
     def setSettings(self):        
         self.graph_type_combobox.setCurrentIndex(0)
         self.p_slider.setValue(100) 
-        self.N_slider.setValue(30)
+        self.N_slider.setValue(5)
         self.refresh_edges_checkbox.setCheckState(Qt.Checked)    
 
     def setupLayout(self):
