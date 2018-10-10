@@ -86,10 +86,8 @@ class PercolationWidget(QWidget):
 
         if(len(b) > 0):
             # use np.nonzero to get the indices from the masks
-            print(np.nonzero(bottomboundary))
             bottomindex_graph = np.nonzero(bottomboundary)[0][c][0]
             topindex_graph = np.nonzero(topboundary)[0][b][0]
-            print("path from " + str(bottomindex_graph) + " to " + str(topindex_graph))
             path = self.graph.findPath(bottomindex_graph, topindex_graph)
             self.graphwidget.setGraph(self.graph, [region], [path])
         else:

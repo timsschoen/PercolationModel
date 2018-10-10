@@ -361,6 +361,8 @@ class Honeycomb_2d(Graph):
 
                 index = y*rowlength + nodes_in_row
 
+                nodes_in_row += 1
+
                 if(y == 0):
                     result[index] = 1
         return result
@@ -382,6 +384,8 @@ class Honeycomb_2d(Graph):
                     continue
 
                 index = y*rowlength + nodes_in_row
+
+                nodes_in_row += 1
 
                 if(y == self.size-1):
                     result[index] = 1
