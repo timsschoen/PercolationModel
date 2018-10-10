@@ -71,29 +71,22 @@ class PercolationWidget(QWidget):
 
         clusters, largest_cluster, largest_cluster_size = self.graph.findClusters()
 
-        print(clusters)
-
         region = (clusters == largest_cluster)
 
+        # get the masks indicating which node belongs to top- or bottomboundary
+        # as defined by the grid type
         bottomboundary = self.graph.getBottomBoundary()
         topboundary = self.graph.getTopBoundary()
-
-        print("bottom boundary mask: " + str(bottomboundary))
-        print("top boundary mask: " + str(topboundary))
 
         bottomrow = clusters[bottomboundary]
         toprow = clusters[topboundary]
 
-        print("clusters at the bottomrow: " + str(bottomrow))
-        print("clusters at the toprow:" + str(toprow))
-
+        # find the indices in top- and bottomrow belonging belonging to the same cluster
         same, b, c = np.intersect1d(toprow,bottomrow, return_indices=True)
 
-        print(same)
-        print(b)
-        print(c)
-
         if(len(b) > 0):
+            # use np.nonzero to get the indices from the masks
+            print(np.nonzero(bottomboundary))
             bottomindex_graph = np.nonzero(bottomboundary)[0][c][0]
             topindex_graph = np.nonzero(topboundary)[0][b][0]
             print("path from " + str(bottomindex_graph) + " to " + str(topindex_graph))

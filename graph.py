@@ -3,6 +3,9 @@ import random
 from priority_queue import PriorityQueue
 from queue import Queue
 
+# this file contains the graph base class
+# and various grid implementations
+
 class Edge:
     def __init__(self, a, b):
         self.a = a
@@ -223,11 +226,16 @@ class Lattice_3d(Graph):
         super(Lattice_3d, self).__init__()
         stepsize = 1/(size-1)
 
+        bottom_boundary = []
+        top_boundary = []
 
         for x in range(size):
             for y in range(size):
                 for z in range(size):
                     self.nodes.append(np.array([x*stepsize, y*stepsize, z*stepsize]))
+
+                    top_boundary.append(y == 0)
+                    bottom_boundary.append(y == size-1)
 
                     if(y != size-1):                    
                         self.edges.append(Edge(x*size*size+y*size+z, x*size*size + (y+1)*size + z))
@@ -237,6 +245,14 @@ class Lattice_3d(Graph):
                         self.edges.append(Edge(x*size*size+y*size+z, x*size*size + y*size + (z+1)))
 
         self.active_edge_count = len(self.edges)
+        self.bottom_boundary = np.array(bottom_boundary).astype(bool)
+        self.top_boundary = np.array(top_boundary).astype(bool)
+
+    def getBottomBoundary(self):
+        return self.bottom_boundary
+
+    def getTopBoundary(self):
+        return self.top_boundary
 
 class Triangles_2d(Graph):
 
